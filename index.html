@@ -165,6 +165,36 @@
             opacity: 1;
         }
 
+        /* --- [NEW] Bento Grid for About Section --- */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem; /* 24px */
+        }
+        .bento-item {
+            background-color: #1a1a1a;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: transform 0.3s;
+        }
+        .bento-item:hover {
+            transform: scale(1.03);
+        }
+        .bento-item h3 {
+            font-size: 1.125rem; /* 18px */
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+        .bento-item p {
+            font-size: 0.9rem; /* 14px */
+            color: #ccc;
+            line-height: 1.5;
+        }
+        /* Spanning items */
+        .col-span-2 {
+            grid-column: span 2 / span 2;
+        }
 
         /* --- 4. Magnetic Button (V1) --- */
         .magnetic-wrapper {
@@ -181,6 +211,94 @@
             font-weight: 600;
             transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
             cursor: none;
+        }
+
+        /* --- 5. [NEW] Modal/Lightbox --- */
+        #project-modal {
+            display: flex; /* Use flex for centering */
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            inset: 0;
+            z-index: 1000; /* High z-index */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        #project-modal.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* [NEW] Blur effect for main content */
+        .is-modal-open #hero,
+        .is-modal-open #about,
+        .is-modal-open #work,
+        .is-modal-open #contact,
+        .is-modal-open footer,
+        .is-modal-open header {
+            filter: blur(10px) brightness(0.5);
+            transition: filter 0.3s ease;
+            pointer-events: none;
+        }
+        
+        /* Adjusted modal content for aesthetics and full image display */
+        /* Modal wrapper: constrain by viewport and center content
+           Use max-width/max-height on the wrapper and let the image
+           size itself using max-* with auto width/height so it never
+           gets stretched or zoomed/cropped. */
+        #project-modal .modal-content-wrapper {
+            position: relative;
+            z-index: 10;
+            margin: 20px; /* Aesthetic padding from screen edges */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 90vw; /* Ensure it doesn't get too wide */
+            max-height: 90vh; /* Ensure it doesn't get too tall */
+            width: 100%;
+            height: auto;
+            background-color: transparent; /* No background for the wrapper */
+            box-shadow: none; /* No shadow on the wrapper */
+        }
+
+        /* Image should scale to fit inside the wrapper while preserving
+           its aspect ratio. Use max-width/max-height and keep width/height
+           auto so the browser scales it correctly (object-fit is still
+           helpful for replaced elements but the auto sizing prevents
+           forced stretching). */
+        #project-modal #modal-image {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto; /* Let the image keep its intrinsic aspect ratio */
+            height: auto; /* Let the image keep its intrinsic aspect ratio */
+            object-fit: contain; /* Ensures the entire image is visible, scales down */
+            border-radius: 0.5rem; /* Soften edges */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); /* Aesthetic shadow for the image */
+            display: block;
+        }
+
+        #modal-close {
+            position: absolute; /* Relative to the modal container */
+            top: 20px; /* Match modal margin */
+            right: 20px; /* Match modal margin */
+            font-size: 2.5rem; /* Slightly smaller, more refined */
+            color: #ffffff; /* White color */
+            mix-blend-mode: normal; /* Don't blend with background for clarity */
+            filter: none; /* No invert filter needed with white color */
+            background-color: rgba(0,0,0,0.3); /* Subtle background for visibility */
+            border-radius: 50%; /* Round button */
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+            cursor: pointer; /* Show it's clickable */
+            z-index: 11; /* Above image */
+        }
+        #modal-close:hover {
+            background-color: rgba(0,0,0,0.6);
         }
 
     </style>
@@ -210,16 +328,41 @@
         </div>
     </section>
 
-    <!-- SECTION 2: About Me -->
-    <section id="about" class="py-32 px-6 max-w-3xl mx-auto text-center">
-        <h2 class="text-lg font-semibold text-purple-400 mb-4 reveal-blur">ABOUT ME</h2>
-        <p class="text-3xl md:text-5xl font-light text-gray-100 leading-tight reveal-blur" style="transition-delay: 200ms;">
-            I'm a passionate designer focused on creating intuitive, beautiful, and user-centered digital experiences that feel *alive*.
-        </p>
+    <!-- SECTION 2: About Me [REDESIGNED] --><section id="about" class="py-32 px-6 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
+            
+            <!-- Column 1: About Me Text --><div class="reveal-blur">
+                <h2 class="text-lg font-semibold text-purple-400 mb-4">ABOUT ME</h2>
+                <p class="text-3xl md:text-5xl font-light text-gray-100 leading-tight mb-8">
+                    I'm a passionate designer focused on creating intuitive, beautiful, and user-centered digital experiences that feel *alive*.
+                </p>
+                <p class="text-lg text-gray-400 leading-relaxed">
+                    My process is rooted in empathy, research, and iteration. I love transforming complex problems into elegant solutions that not only look good but are a joy to use.
+                </p>
+            </div>
+            
+            <!-- Column 2: Services Bento Grid --><div class="reveal-blur" style="transition-delay: 200ms;">
+                <h2 class="text-lg font-semibold text-purple-400 mb-4">MY SERVICES</h2>
+                <div class="bento-grid">
+                    <div class="bento-item col-span-2">
+                        <h3>UI/UX Design</h3>
+                        <p>Crafting seamless user journeys and visually stunning interfaces from start to finish.</p>
+                    </div>
+                    <div class="bento-item">
+                        <h3>Prototyping</h3>
+                        <p>Building interactive mockups that bring ideas to life and allow for rapid testing.</p>
+                    </div>
+                    <div class="bento-item">
+                        <h3>Branding</h3>
+                        <p>Developing unique brand identities, logos, and visual systems that tell a story.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </section>
 
-    <!-- SECTION 3: Liquid Distortion Gallery -->
-    <section id="work" class="bg-gray-950">
+    <!-- SECTION 3: Liquid Distortion Gallery --><section id="work" class="bg-gray-950">
         <div class="text-center max-w-3xl mx-auto px-6">
             <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 reveal-blur">Selected Projects</h2>
             <p class="text-lg text-gray-300 mb-16 reveal-blur" style="transition-delay: 200ms;">
@@ -237,7 +380,7 @@
                 </div>
             </div>
             <div id="project-track">
-                <!-- Project 1 -->
+              <!-- Project 1 -->
                 <div class="project-card">
                     <div class="project-card-inner">
                         <img src="img/1.png" alt="Maggi Hot & Spicy Social Media Post" class="project-image">
@@ -250,9 +393,9 @@
                 <!-- Project 2 -->
                 <div class="project-card">
                     <div class="project-card-inner">
-                        <img src="img/L1.jpg" alt="Matrika Logo Design" class="project-image">
+                        <img src="img/L2.jpg" alt="Matrika Logo Design" class="project-image">
                         <div class="project-card-content">
-                            <h3>Matrika Brand Identity</h3>
+                            <h3>UU E-Sport Club</h3>
                             <p>Logo & Branding</p>
                         </div>
                     </div>
@@ -307,26 +450,59 @@
                         </div>
                     </div>
                 </div>
-                <!-- Add a final "card" as padding -->
-                <div style="width: calc(50vw - 175px); flex-shrink: 0;"></div>
+                
+                
+                <!-- Project 8 (NEW) -->
+                <div class="project-card">
+                    <div class="project-card-inner">
+                        <img src="img/6.png" alt="Knoor Noodles" class="project-image">
+                        <div class="project-card-content">
+                            <h3>Knorr Noodles</h3>
+                            <p>Promotional Post</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Project 9 (NEW) -->
+                <div class="project-card">
+                    <div class="project-card-inner">
+                        <img src="img/t3.png" alt="Income Tips" class="project-image">
+                        <div class="project-card-content">
+                            <h3>Passive Income Tips</h3>
+                            <p>YouTube Video Thumbnail</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Project 10 (NEW) -->
+                <div class="project-card">
+                    <div class="project-card-inner">
+                        <img src="img/t5.png" alt="Daily Vlog" class="project-image">
+                        <div class="project-card-content">
+                            <h3>Daily Vlog</h3>
+                            <p>YouTube Video Thumbnail</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add a final "card" as padding --><div style="width: calc(50vw - 175px); flex-shrink: 0;"></div>
             </div>
         </div>
     </section>
 
-    <!-- SECTION 4: Contact with Magnetic Buttons -->
-    <section id="contact" class="py-48 text-center px-6">
+    <!-- SECTION 4: Contact with Magnetic Buttons --><section id="contact" class="py-48 text-center px-6">
         <h2 class="text-4xl md:text-6xl font-bold text-white mb-8 reveal-blur">Let's build something <br> amazing together.</h2>
         <p class="text-xl text-gray-400 mb-12 max-w-2xl mx-auto reveal-blur" style="transition-delay: 200ms;">
             I'm currently available for freelance projects and full-time opportunities.
         </p>
         <div class="flex justify-center items-center gap-6 flex-wrap">
             <div class="magnetic-wrapper reveal-blur" style="transition-delay: 400ms;">
-                <a href="mailto:bhumika.rajput@example.com" class="magnetic-button" id="magnetic-btn-1">
+                <a href="mailto:bhumikarajput0005@gmail.com" class="magnetic-button" id="magnetic-btn-1">
                     Email Me
                 </a>
             </div>
-            <div class="magnetic-wrapper reveal-blur" style="transition-delay: 500ms;">
-                <a href="#" class="magnetic-button" id="magnetic-btn-2">
+                <div class="magnetic-wrapper reveal-blur" style="transition-delay: 500ms;">
+                <a href="https://www.linkedin.com/in/bhumika-rajput19" class="magnetic-button" id="magnetic-btn-2" target="_blank" rel="noopener noreferrer">
                     My LinkedIn
                 </a>
             </div>
@@ -337,6 +513,16 @@
         <p class="text-gray-500">© <span id="year"></span> Bhumika Rajput. All rights reserved.</p>
     </footer>
 
+    <!-- [NEW] Project Lightbox Modal --><div id="project-modal" class="fixed inset-0 z-[1000] items-center justify-center p-6">
+        <!-- Overlay --><div id="modal-overlay" class="absolute inset-0 bg-black/80 backdrop-blur-sm cursor-pointer"></div>
+        
+        <!-- Content --><div class="modal-content-wrapper">
+            <img id="modal-image" src="" alt="Full project image">
+        </div>
+        
+        <!-- Close Button --><button id="modal-close" class="cursor-link">&times;</button>
+    </div>
+
 
     <script>
         // Set current year
@@ -345,9 +531,15 @@
         // Detect if touch device
         const isTouchDevice = () => 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
+        // [FIX] Define dragCheck in the global script scope
+        let dragCheck = {
+            startX: 0,
+            endX: 0
+        };
+
         // --- 0. Custom Cursor Logic ---
         const cursor = document.querySelector('.custom-cursor');
-        const links = document.querySelectorAll('.cursor-link, .magnetic-button, .ghost-text');
+        const links = document.querySelectorAll('.cursor-link, .magnetic-button, .ghost-text, #modal-close'); // Added #modal-close to cursor links
 
         if (!isTouchDevice()) {
             window.addEventListener('mousemove', e => {
@@ -441,6 +633,12 @@
             let startX;
             let scrollLeft;
 
+            // [FIX] Click vs. Drag state - removed 'let' to use global var
+            dragCheck = {
+                startX: 0,
+                endX: 0
+            };
+
             // Calculate the maximum scroll position
             let maxScroll = 0;
             function updateMaxScroll() {
@@ -463,14 +661,20 @@
                 gallery.style.cursor = 'grabbing';
                 startX = e.pageX - gallery.offsetLeft;
                 scrollLeft = -currentX; // Start from the current "eased" position
+                
+                // [NEW] Record start of potential click
+                dragCheck.startX = e.pageX;
             });
             gallery.addEventListener('mouseleave', () => {
                 isDown = false;
                 gallery.style.cursor = 'grab';
             });
-            gallery.addEventListener('mouseup', () => {
+            gallery.addEventListener('mouseup', (e) => {
                 isDown = false;
                 gallery.style.cursor = 'grab';
+                
+                // [NEW] Record end of potential click
+                dragCheck.endX = e.pageX;
             });
             gallery.addEventListener('mousemove', (e) => {
                 if (!isDown) return;
@@ -534,6 +738,62 @@
                 if (button) magnetize(button, wrapper);
             });
         }
+
+        // --- 5. [NEW] Modal Logic ---
+        const modal = document.getElementById('project-modal');
+        const modalImage = document.getElementById('modal-image');
+        const modalClose = document.getElementById('modal-close');
+        const modalOverlay = document.getElementById('modal-overlay');
+
+        function openModal(src) {
+            if (!modal || !modalImage) return;
+            modalImage.src = src;
+            modal.classList.add('visible');
+            document.body.classList.add('is-modal-open');
+             // Prevent body scrolling when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            if (!modal) return;
+            modal.classList.remove('visible');
+            document.body.classList.remove('is-modal-open');
+            // Re-enable body scrolling
+            document.body.style.overflow = '';
+        }
+
+        // Add listeners to all project cards
+        document.querySelectorAll('.project-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                
+                // Check if it was a drag (if not on touch device)
+                if (!isTouchDevice()) {
+                    const dragDistance = Math.abs(dragCheck.startX - dragCheck.endX);
+                    if (dragDistance > 10) { // If mouse moved more than 10px, it was a drag
+                        // Reset check values
+                        dragCheck.startX = 0;
+                        dragCheck.endX = 0;
+                        return; // Don't open modal
+                    }
+                }
+                
+                // If it was a click (or on a touch device), open modal
+                // Find the image source from the card that was clicked
+                const imgSrc = card.querySelector('.project-image').src;
+                if (imgSrc) {
+                    openModal(imgSrc);
+                }
+                
+                // Reset check values
+                dragCheck.startX = 0;
+                dragCheck.endX = 0;
+            });
+        });
+
+        // Close modal listeners
+        if (modalClose) modalClose.addEventListener('click', closeModal);
+        if (modalOverlay) modalOverlay.addEventListener('click', closeModal);
+        
     </script>
 </body>
 </html>
